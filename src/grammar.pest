@@ -1,0 +1,36 @@
+num = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
+    int = { ("+" | "-")? ~ ASCII_DIGIT+ }
+
+AND = _{ ^"AND" }
+OR = _{ ^"OR" }
+
+operation_add = { "+" }
+
+operation_subtract = { "-" }
+
+operation_multiply = { "*" }
+
+operation_divide = { "/" }
+
+operation_concat = { "||" }
+
+operation_and = { AND }
+
+operation_or = { OR }
+
+operation = _{
+    operation_add
+    | operation_subtract
+    | operation_multiply
+    | operation_divide
+    | operation_concat
+    | operation_and
+    | operation_or
+}
+
+expr = { term ~ (operation ~ term)* }
+term = _{ num | "(" ~ expr ~ ")" }
+
+calculation = _{ SOI ~ expr ~ EOI }
+
+WHITESPACE = _{ " " | "\t" }
