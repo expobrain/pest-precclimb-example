@@ -4,6 +4,8 @@ num = @{ int ~ ("." ~ ASCII_DIGIT*)? ~ (^"e" ~ int)? }
 AND = _{ ^"AND" }
 OR = _{ ^"OR" }
 
+operation_equal = { "=" }
+
 operation_add = { "+" }
 
 operation_subtract = { "-" }
@@ -26,6 +28,7 @@ operation = _{
     | operation_concat
     | operation_and
     | operation_or
+    | operation_equal
 }
 
 expr = { term ~ (operation ~ term)* }

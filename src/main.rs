@@ -20,6 +20,7 @@ lazy_static! {
         use Rule::*;
 
         PrecClimber::new(vec![
+            Operator::new(operation_equal, Left),
             Operator::new(operation_add, Left) | Operator::new(operation_subtract, Left),
             Operator::new(operation_multiply, Left) | Operator::new(operation_divide, Left),
             Operator::new(operation_or, Left),
@@ -50,6 +51,9 @@ pub enum Operator {
 
     /// Logical or
     Or,
+
+    /// Equality
+    Equal,
 }
 
 impl Operator {
@@ -62,6 +66,7 @@ impl Operator {
             "||" => Self::Concat,
             "AND" => Self::And,
             "OR" => Self::Or,
+            "=" => Self::Equal,
             _ => unreachable!(format!("Operator: symbol {} not supported", s)),
         }
     }
@@ -96,7 +101,8 @@ fn parse_value(expression: Pairs<Rule>) -> AstNode {
         |left: AstNode, op: Pair<Rule>, right: AstNode| {
             // eprintln!("infix: {:#?}", op);
             match op.as_rule() {
-                Rule::operation_add
+                Rule::operation_equal
+                | Rule::operation_add
                 | Rule::operation_subtract
                 | Rule::operation_multiply
                 | Rule::operation_divide
@@ -113,7 +119,7 @@ fn parse_value(expression: Pairs<Rule>) -> AstNode {
 }
 
 fn main() {
-    let tokens = CalcParser::parse(Rule::calculation, "1 or 2 and 3").unwrap();
+    let tokens = CalcParser::parse(Rule::calculation, "3 = 1 + 2").unwrap();
     let ast = parse_value(tokens);
 
     println!("{:#?}", ast);
