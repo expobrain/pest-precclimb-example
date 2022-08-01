@@ -57,7 +57,7 @@ pub enum Operator {
 }
 
 impl Operator {
-    pub fn from_str(s: &str) -> Self {
+    pub fn parse_str(s: &str) -> Self {
         match s.to_uppercase().as_str() {
             "*" => Self::Multiply,
             "/" => Self::Divide,
@@ -67,11 +67,12 @@ impl Operator {
             "AND" => Self::And,
             "OR" => Self::Or,
             "=" => Self::Equal,
-            _ => unreachable!(format!("Operator: symbol {} not supported", s)),
+            _ => unreachable!("Operator: symbol {} not supported", s),
         }
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 enum AstNode {
     Identifier {
@@ -109,7 +110,7 @@ fn parse_value(expression: Pairs<Rule>) -> AstNode {
                 | Rule::operation_and
                 | Rule::operation_or => AstNode::Expr {
                     left: Box::new(left),
-                    op: Operator::from_str(op.as_str()),
+                    op: Operator::parse_str(op.as_str()),
                     right: Box::new(right),
                 },
                 _ => unreachable!(),
